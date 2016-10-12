@@ -5,37 +5,37 @@ import numpy as np
 def nothing(x):
     pass
 
+# Check if filename is passed
+if (len(sys.argv) <= 1) :
+    print "Usage: python hsvThresholder.py <ImageFilePath>"
+    exit()
+
 # Create a black image, a window
 img = cv2.imread(sys.argv[1])
 cv2.namedWindow('image')
 
 # create trackbars for color change
-cv2.createTrackbar('HMin','image',0,179,nothing)
+cv2.createTrackbar('HMin','image',0,179,nothing) # Hue is from 0-179 for Opencv
 cv2.createTrackbar('SMin','image',0,255,nothing)
 cv2.createTrackbar('VMin','image',0,255,nothing)
 cv2.createTrackbar('HMax','image',0,179,nothing)
 cv2.createTrackbar('SMax','image',0,255,nothing)
 cv2.createTrackbar('VMax','image',0,255,nothing)
 
+# Set default value for MAX HSV trackbars.
 cv2.setTrackbarPos('HMax', 'image', 179)
 cv2.setTrackbarPos('SMax', 'image', 255)
 cv2.setTrackbarPos('VMax', 'image', 255)
-# create switch for ON/OFF functionality
-#switch = '0 : OFF \n1 : ON'
-#cv2.createTrackbar(switch, 'image',0,1,nothing)
 
+# Initialize to check if HSV min/max value changes
 hMin = sMin = vMin = hMax = sMax = vMax = 0
-phMin = hMin
-psMin = sMin
-pvMin = vMin
-phMax = hMax
-psMax = sMax
-pvMax = vMax
+phMin = psMin = pvMin = phMax = psMax = pvMax = 0
 
+# Output Image to display
 output = img
 while(1):
 
-    # get current positions of four trackbars
+    # get current positions of all trackbars
     hMin = cv2.getTrackbarPos('HMin','image')
     sMin = cv2.getTrackbarPos('SMin','image')
     vMin = cv2.getTrackbarPos('VMin','image')
@@ -43,15 +43,17 @@ while(1):
     hMax = cv2.getTrackbarPos('HMax','image')
     sMax = cv2.getTrackbarPos('SMax','image')
     vMax = cv2.getTrackbarPos('VMax','image')
+
+    # Set minimum and max HSV values to display
     lower = np.array([hMin, sMin, vMin])
     upper = np.array([hMax, sMax, vMax])
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
+    # Create HSV Image and threshold into a range.
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lower, upper)
-    
     output = cv2.bitwise_and(img,img, mask= mask)
 
-    # To improve the HSV Visualizer http://www.pyimagesearch.com/2014/08/04/opencv-python-color-detection/
+    # Print if there is a change in HSV value
     if( (phMin != hMin) | (psMin != sMin) | (pvMin != vMin) | (phMax != hMax) | (psMax != sMax) | (pvMax != vMax) ):
         print("(hMin = %d , sMin = %d, vMin = %d), (hMax = %d , sMax = %d, vMax = %d)" % (hMin , sMin , vMin, hMax, sMax , vMax))
         phMin = hMin
@@ -61,7 +63,10 @@ while(1):
         psMax = sMax
         pvMax = vMax
 
+    # Display output image
     cv2.imshow('image',output)
+
+    # Wait for 33 milliseconds: 30FPS
     k = cv2.waitKey(33) & 0xFF
     if k == 27:
         break
