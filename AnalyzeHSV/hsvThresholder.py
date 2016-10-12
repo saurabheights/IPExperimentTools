@@ -13,7 +13,7 @@ cv2.namedWindow('image')
 cv2.createTrackbar('HMin','image',0,179,nothing)
 cv2.createTrackbar('SMin','image',0,255,nothing)
 cv2.createTrackbar('VMin','image',0,255,nothing)
-cv2.createTrackbar('HMax','image',0,180,nothing)
+cv2.createTrackbar('HMax','image',0,179,nothing)
 cv2.createTrackbar('SMax','image',0,255,nothing)
 cv2.createTrackbar('VMax','image',0,255,nothing)
 
