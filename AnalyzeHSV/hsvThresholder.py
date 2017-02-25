@@ -12,6 +12,7 @@ if (len(sys.argv) <= 1) :
 
 # Create a black image, a window
 img = cv2.imread(sys.argv[1])
+img = cv2.resize(img, (480, 360))
 cv2.namedWindow('image')
 
 # create trackbars for color change
