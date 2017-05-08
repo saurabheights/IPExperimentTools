@@ -5,13 +5,14 @@ import numpy as np
 def nothing(x):
     pass
 
+useCamera=False
+
 # Check if filename is passed
 if (len(sys.argv) <= 1) :
-    print "Usage: python hsvThresholder.py <ImageFilePath>"
-    exit()
+    print "'Usage: python hsvThresholder.py <ImageFilePath>' to ignore camera and use a local image."
+    useCamera = True
 
-# Create a black image, a window
-img = cv2.imread(sys.argv[1])
+# Create a window
 cv2.namedWindow('image')
 
 # create trackbars for color change
@@ -32,8 +33,21 @@ hMin = sMin = vMin = hMax = sMax = vMax = 0
 phMin = psMin = pvMin = phMax = psMax = pvMax = 0
 
 # Output Image to display
-output = img
+if useCamera:
+    cap = cv2.VideoCapture(0)
+    # Wait longer to prevent freeze for videos.
+    waitTime = 330
+else:
+    img = cv2.imread(sys.argv[1])
+    output = img
+    waitTime = 33
+
 while(1):
+
+    if useCamera:
+        # Capture frame-by-frame
+        ret, img = cap.read()
+        output = img
 
     # get current positions of all trackbars
     hMin = cv2.getTrackbarPos('HMin','image')
@@ -66,8 +80,12 @@ while(1):
     # Display output image
     cv2.imshow('image',output)
 
-    # Wait for 33 milliseconds: 30FPS
-    k = cv2.waitKey(33) & 0xFF
-    if k == 27:
+    # Wait longer to prevent freeze for videos.
+    if cv2.waitKey(waitTime) & 0xFF == ord('q'):
         break
+
+# Release resources
+if useCamera:
+    cap.release()
 cv2.destroyAllWindows()
+
