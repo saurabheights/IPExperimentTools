@@ -9,7 +9,7 @@ useCamera=False
 
 # Check if filename is passed
 if (len(sys.argv) <= 1) :
-    print "'Usage: python hsvThresholder.py <ImageFilePath>' to ignore camera and use a local image."
+    print ("'Usage: python hsvThresholder.py <ImageFilePath>' to ignore camera and use a local image.")
     useCamera = True
 
 # Create a window
